@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversational PDF Chatbot</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';</script>
+    
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- Google GenAI SDK (ES Module import in script.js) -->
+    <script>
+        if (window.location.protocol === 'file:') {
+            alert("Security Warning:\n\nThis app uses ES Modules (for Google GenAI) which main browsers BLOCK when opening 'index.html' directly from a folder.\n\nUsage:\n1. Open this folder in VS Code\n2. Right Click index.html -> 'Open with Live Server'\n\nOR run: python -m http.server\nThen go to: http://localhost:8000");
+        }
+    </script>
+</head>
+<body>
+
+    <div class="app-container">
+        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fa-solid fa-file-pdf"></i> PDF Chatbot</h2>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="input-group">
+                    <label for="api-key"><i class="fa-solid fa-key"></i> Gemini API Key</label>
+                    <input type="password" id="api-key" placeholder="Enter your API Key">
+                    <small>Required for AI features</small>
+                </div>
+
+                <div class="input-group">
+                    <label for="pdf-upload"><i class="fa-solid fa-cloud-arrow-up"></i> Upload PDF</label>
+                    <label class="file-upload-btn">
+                        <span>Choose File</span>
+                        <input type="file" id="pdf-upload" accept="application/pdf">
+                    </label>
+                    <div id="file-name" class="file-name">No file selected</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="app-mode"><i class="fa-solid fa-layer-group"></i> Application Mode</label>
+                    <select id="app-mode">
+                        <option value="chat">Conversational Chat (RAG)</option>
+                        <option value="summary">Targeted Summarization</option>
+                        <option value="exam">Exam Generator & Grader</option>
+                    </select>
+                </div>
+
+                <div id="status-container" class="status-container hidden">
+                     <div class="spinner"></div>
+                     <span id="status-text">Processing...</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <button id="mobile-menu-btn" class="mobile-menu-btn">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <!-- Chat Mode -->
+            <section id="mode-chat" class="mode-section active">
+                <div class="header">
+                    <h1>Conversational Chat (RAG)</h1>
+                    <p>Chat with your document using AI</p>
+                </div>
+                <div id="chat-history" class="chat-container">
+                    <!-- Messages will appear here -->
+                    <div class="welcome-message">
+                        <i class="fa-solid fa-robot"></i>
+                        <p>Upload a PDF and ask questions!</p>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Ask a question about the PDF...">
+                    <button id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </section>
+
+            <!-- Summary Mode -->
+            <section id="mode-summary" class="mode-section">
+                <div class="header">
+                    <h1>Targeted Summarization</h1>
+                    <p>Summarize specific parts of your document</p>
+                </div>
+                <div id="summary-history" class="chat-container">
+                     <div class="welcome-message">
+                        <i class="fa-solid fa-highlighter"></i>
+                        <p>Ask for a summary of any topic in the PDF.</p>
+                    </div>
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="summary-input" placeholder="What part would you like summarized?">
+                    <button id="summary-btn"><i class="fa-solid fa-wand-magic-sparkles"></i></button>
+                </div>
+            </section>
+
+            <!-- Exam Mode -->
+            <section id="mode-exam" class="mode-section">
+                <div class="header">
+                    <h1>Exam Generator & Grader</h1>
+                    <p>Test your knowledge</p>
+                </div>
+                
+                <div class="exam-controls">
+                    <input type="text" id="exam-topic" placeholder="Enter topic (e.g., 'Main Concepts')">
+                    <button id="generate-exam-btn" class="primary-btn">✨ Generate Quiz</button>
+                </div>
+
+                <div id="quiz-container" class="quiz-container hidden">
+                    <!-- Quiz will be injected here -->
+                </div>
+
+                <div id="quiz-results" class="quiz-results hidden">
+                    <!-- Results -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
