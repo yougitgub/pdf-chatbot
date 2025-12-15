@@ -4,7 +4,7 @@ import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
 
 // --- CONFIGURATION ---
 // Paste your API Key here to avoid entering it every time
-const API_KEY = "AIzaSyAYc3lb7WWYUeXqrewEn3c9XUmHQiv5xo0";
+const API_KEY = "AIzaSyCvyAmn7Ne9C8hyKahUyGaQX5wupX3APCQ";
 
 // Globals
 let genAI = null;
@@ -504,3 +504,4 @@ function getFeedback(score) {
     if (score >= 3) return "👍 Good effort! Review the material to improve.";
     return "📖 Keep studying! Focus on key concepts.";
 }
+
